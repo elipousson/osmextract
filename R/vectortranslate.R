@@ -556,6 +556,21 @@ process_boundary = function(
   # Match the boundary type
   boundary_type = match.arg(boundary_type)
 
+  boundary = prepare_boundary(boundary, boundary_type)
+
+  # Add and return
+  switch(
+    boundary_type,
+    spat = process_spat(vectortranslate_options, boundary),
+    clipsrc = process_clipsrc(vectortranslate_options, boundary),
+    clipdst = process_clipdst(vectortranslate_options, boundary)
+  )
+}
+
+# Convert the boundary argument into a valid sfc POLYGON/MULTIPOLYGON object
+# with EPSG:4326 CRS (unless boundary_type is "clipdst", which keeps the
+# original CRS). It is shared by the GDAL and DuckDB code paths.
+prepare_boundary = function(boundary, boundary_type = "spat") {
   # Extract/convert the geometry (or just return the geometry if boundary is a
   # sfc)
   if (inherits(boundary, "bbox")) {
@@ -584,13 +599,7 @@ process_boundary = function(
     boundary = sf::st_make_valid(boundary)
   }
 
-  # Add and return
-  switch(
-    boundary_type,
-    spat = process_spat(vectortranslate_options, boundary),
-    clipsrc = process_clipsrc(vectortranslate_options, boundary), 
-    clipdst = process_clipdst(vectortranslate_options, boundary)
-  )
+  boundary
 }
 
 # Add "-spat" + (xmin, ymin, xmax, ymax)

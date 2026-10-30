@@ -40,8 +40,10 @@ Suggests:
     dodgr (>= 0.4.3),
     sfnetworks,
     tidygraph,
-    dplyr
-Remotes: 
+    dplyr,
+    duckdb,
+    DBI
+Remotes:
     r-spatial/sf
 VignetteBuilder: knitr
 Language: en-GB
